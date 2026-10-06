@@ -1,0 +1,22 @@
+# Runtime parameters — loaded by AgentRegistry, passed as Graph(config=...).
+# Separate from config/agent.yaml (the static manifest).
+
+max_retry: 3
+timeout_s: 30
+
+# Anomaly-detection tuning — forwarded to the inner DomainWorkflowGraph by
+# DomainWorkflowGraphNode._parent_config() under
+# config["configurable"]["anomaly_thresholds"]; the inner graph republishes the
+# block as the JSON-string state field `thresholds_config` for the domain nodes
+# (see src/graph/graph.py and src/graph/domain_workflow_graph.py).
+anomaly_thresholds:
+  z_score_threshold: 2.0
+  confidence_high: 0.7
+  confidence_medium: 0.4
+
+# Severity bands by confidence (reference only — the bands are derived at
+# runtime from confidence_high / confidence_medium above).
+severity_levels:
+  LOW: "confidence < 0.4"
+  MEDIUM: "0.4 <= confidence < 0.7"
+  HIGH: "confidence >= 0.7"
